@@ -1,0 +1,12 @@
+{
+  "name": "OSMD Demo",
+  "description": "A basic demo for Open Sheet Music Display",
+  "author": "PhonicScore GmbH",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/opensheetmusicdisplay/demo.git"
+  },
+  "license": "MIT"
+}
