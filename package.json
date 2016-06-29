@@ -20,6 +20,7 @@
     "jszip": "",
     "tsify": "",
     "tslint": "3.8.0",
-    "typescript": ""
+    "typescript": "",
+    "opensheetmusicdisplay": "file:../opensheetmusicdisplay"
   }
 }

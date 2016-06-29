@@ -2,11 +2,12 @@ import { MusicSheet, IXmlElement, VexFlowMusicSheetCalculator, GraphicalMusicShe
 
 export class MusicSheet {
     constructor() {
-        return;
+      this.drawer = new VexFlowMusicSheetDrawer(canvas);
     }
 
     private canvas: HTMLCanvasElement;
     private sheet: MusicSheet;
+    private drawer: MusicSheetDrawer;
 
     public load(sheet: Element): void {
       let score: IXmlElement = new IXmlElement(sheet);
@@ -18,8 +19,7 @@ export class MusicSheet {
     public display(canvas: HTMLCanvasElement): void {
       this.canvas = canvas;
       let gms: GraphicalMusicSheet = new GraphicalMusicSheet(sheet, calc);
-      // FIXME: draw on canvas!
-      (new VexFlowMusicSheetDrawer()).drawSheet(gms);
+      this.drawer.drawSheet(gms);
     }
 
     public free(): void {
