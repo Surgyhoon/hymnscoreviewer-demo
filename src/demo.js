@@ -1,5 +1,5 @@
 new (function Demo() {
-  "use strict";
+  //"use strict";
   var sheet;
 
   var demos = {
@@ -8,6 +8,10 @@ new (function Demo() {
     "Bach - Air": "../data/JohannSebastianBach_Air.xml",
     "Telemann": "../data/TelemannWV40.102_Sonate-Nr.1.1-Dolce.xml",
   }
+
+  var resize;
+  var zoom = 1;
+  var err;
 
   function init() {
     // Create heading
@@ -29,26 +33,68 @@ new (function Demo() {
     select.onchange = function() {
       loadMusicXML(select.value);
     }
+
+    // Create zoom controls
+    var btn = document.createElement("input");
+    btn.type = "button";
+    btn.value = "+";
+    btn.onclick = function() {
+      zoom *= 1.2;
+      sheet.scale(zoom);
+    };
+    document.body.appendChild(btn);
+    btn = document.createElement("input");
+    btn.type = "button";
+    btn.value = "-";
+    btn.onclick = function() {
+      zoom /= 1.2;
+      sheet.scale(zoom);
+    };
+    document.body.appendChild(btn);
+
     document.body.appendChild(document.createElement("br"));
+
+    // Create error displayer
+    err = document.createElement("div");
+    err.style.color = "red";
+    document.body.appendChild(err);
 
     // Create sheet object and canvas
     sheet = new window.osmd.MusicSheet();
     var canvas = document.createElement("canvas");
     document.body.appendChild(canvas);
     sheet.setCanvas(canvas);
-    sheet.setWidth(200);
+
+    // Set resize
+    resize = new window.Resize(
+      function(){
+
+      },
+      function() {
+        var width = document.body.clientWidth;
+        sheet.setWidth(width);
+      }
+    );
   }
 
   function loadMusicXML(url) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
-      console.log(xhttp);
       if (xhttp.readyState == 4 && xhttp.status == 0) {
-        sheet.load(xhttp.responseXML);
+        xml(xhttp.responseXML);
       }
     };
     xhttp.open("GET", url, true);
     xhttp.send();
+  }
+
+  function xml(data) {
+    err.textContent = "";
+    try {
+      sheet.load(data);
+    } catch (e) {
+      err.textContent = "Error loading sheet: " + e;
+    }
   }
 
 
