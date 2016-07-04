@@ -1,5 +1,5 @@
 function Resize(startCallback, endCallback) {
-  //"use strict";
+  "use strict";
 
   var rtime;
   var timeout = false;

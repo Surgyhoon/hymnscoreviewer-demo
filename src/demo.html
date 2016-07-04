@@ -1,10 +1,49 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Sample OSMD Demo</title>
+        <title>OSMD Demo</title>
         <script src="../../opensheetmusicdisplay/build/osmd.js"></script>
         <script src="resize.js"></script>
         <script src="demo.js"></script>
     </head>
-    <body></body>
+    <style>
+    .bignum {
+      width: 1em;
+      text-align: center;
+      font-size: 4em;
+      color: white;
+      background-color: black;
+      padding: 0.3em;
+      border-right: 0.3em solid white;
+    }
+    #error-tr {
+      background-color: red;
+      text-align: center;
+    }
+    #err {
+      padding: 1em;
+      color: white;
+    }
+    </style>
+    <body>
+      <h1>Open Sheet Music Display Demo</h1>
+      <table cellspacing="0" style="width: 100%;">
+        <tr><td class="bignum">1</td><td><p>
+          Select a sample from the list below...</p>
+          <select id="select"></select>
+          <p>... or just drag'n'drop your MusicXML file on this page.
+        </p>
+        </td></tr>
+        <tr><td class="bignum">2</td><td><p>
+          Zoom controls:
+          <input type="button" value="Zoom In" id="zoom-in"/>
+          <input type="button" value="Zoom Out" id="zoom-out"/>
+        </p>
+        <p>
+          Current size: <span id="size">???</span>px.
+        </p>
+      </td></tr>
+      <tr id="error-tr" style="display: none;"><td></td><td id="err"></td></tr>
+      </table>
+    </body>
 </html>
