@@ -10,7 +10,6 @@ function Resize(startCallback, endCallback) {
     if (new Date() - rtime < delta) {
       timeout = setTimeout(resizeEnd, delta);
     } else {
-      console.log("OK");
       endCallback();
     }
   }

@@ -2,13 +2,20 @@ new (function Demo() {
   "use strict";
   var sheet;
 
+  var folder = "../samples/";
   var demos = {
-    "Clementi - Sonatina Op.36 No.1 Pt.1": "../data/MuzioClementi_SonatinaOpus36No1_Part1.xml",
-    "Clementi - Sonatina Op.36 No.1 Pt.2": "../data/MuzioClementi_SonatinaOpus36No1_Part2.xml",
-    "Clementi - Sonatina Op.36 No.3 Pt.1": "../data/MuzioClementi_SonatinaOpus36No3_Part1.xml",
-    "Clementi - Sonatina Op.36 No.3 Pt.2": "../data/MuzioClementi_SonatinaOpus36No3_Part2.xml",
-    "J.S. Bach - Air": "../data/JohannSebastianBach_Air.xml",
-    "Telemann - Sonata, TWV 40:102 - 1. Dolce": "../data/TelemannWV40.102_Sonate-Nr.1.1-Dolce.xml",
+    "M. Clementi - Sonatina Op.36 No.1 Pt.1": "MuzioClementi_SonatinaOpus36No1_Part1",
+    "M. Clementi - Sonatina Op.36 No.1 Pt.2": "MuzioClementi_SonatinaOpus36No1_Part2",
+    "M. Clementi - Sonatina Op.36 No.3 Pt.1": "MuzioClementi_SonatinaOpus36No3_Part1",
+    "M. Clementi - Sonatina Op.36 No.3 Pt.2": "MuzioClementi_SonatinaOpus36No3_Part2",
+    "J.S. Bach - Air": "JohannSebastianBach_Air",
+    "G.P. Telemann - Sonata, TWV 40:102 - 1. Dolce": "TelemannWV40.102_Sonate-Nr.1.1-Dolce",
+    "C. Gounod - Meditation": "CharlesGounod_Meditation",
+    "J.S. Bach - Praeludium In C Dur BWV846 1": "JohannSebastianBach_PraeludiumInCDur_BWV846_1",
+    "J. Haydn - Concertante Cello": "JosephHaydn_ConcertanteCello",
+    "P. Koen - Fugue in G Major": "PeterKoen-FugueInGMajor",
+    "S. Joplin - Elite Syncopations": "ScottJoplin_EliteSyncopations",
+    "S. Joplin - The Entertainer": "ScottJoplin_The_Entertainer",
   }
 
   var resize;
@@ -19,6 +26,8 @@ new (function Demo() {
   var zoomIn, zoomOut;
 
   var size;
+  var custom;
+
 
   function init() {
     size = document.getElementById("size");
@@ -33,8 +42,10 @@ new (function Demo() {
       select.appendChild(option);
     }
     select.onchange = function() {
-      loadMusicXML(select.value);
+      loadMusicXML(folder + select.value + ".xml");
     }
+    custom = document.createElement("option");
+    custom.appendChild(document.createTextNode("Custom"));
 
     // Create zoom controls
     var btn = document.getElementById("zoom-in");
@@ -108,6 +119,9 @@ new (function Demo() {
       enable();
       throw e;
     }
+    // Remove option from select
+    select.removeChild(custom);
+    // Enable
     enable();
   }
 
@@ -139,11 +153,13 @@ new (function Demo() {
     enable();
   });
   window.addEventListener("drop", function(event) {
+    // Add "Custom..." score
+    select.appendChild(custom);
+    custom.selected = "selected";
     event.preventDefault();
     var reader = new FileReader();
     reader.onload = function (res) {
       var content = res.target.result;
-      console.log("content", content.substr(0, 100));
       xml((new DOMParser()).parseFromString(content, "text/xml"));
     };
     reader.readAsText(event.dataTransfer.files[0]);
