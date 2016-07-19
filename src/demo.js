@@ -1,10 +1,10 @@
 /*jslint browser:true */
-new (function () {
+(function () {
     "use strict";
     // The MusicSheet object
     var sheet,
     // The folder of the demo files
-        folder = "../samples/",
+        folder = "samples/",
     // The available demos
         demos = {
             "M. Clementi - Sonatina Op.36 No.1 Pt.1": "MuzioClementi_SonatinaOpus36No1_Part1",
@@ -29,108 +29,132 @@ new (function () {
         zoomIn,
         zoomOut,
         size,
-        custom;
+        zoomDiv,
+        custom,
+        nextCursorBtn,
+        showCursorBtn,
+        hideCursorBtn;
 
-
+    // Initialization code
     function init() {
+        var name, option;
+
+        err = document.getElementById("err");
         size = document.getElementById("size");
-        // Create select
+        zoomDiv = document.getElementById("zoom");
+        custom = document.createElement("option");
         select = document.getElementById("select");
-        for (var name in demos) {
+        zoomIn = document.getElementById("zoom-in");
+        zoomOut = document.getElementById("zoom-out");
+        canvas = document.createElement("div");
+        nextCursorBtn = document.getElementById("nextCursorBtn");
+        showCursorBtn = document.getElementById("showCursorBtn");
+        hideCursorBtn = document.getElementById("hideCursorBtn");
+
+        // Create select
+        for (name in demos) {
             if (demos.hasOwnProperty(name)) {
-                var option = document.createElement("option");
+                option = document.createElement("option");
                 option.value = demos[name];
                 option.textContent = name;
             }
             select.appendChild(option);
         }
         select.onchange = selectOnChange;
-        custom = document.createElement("option");
+
         custom.appendChild(document.createTextNode("Custom"));
 
         // Create zoom controls
-        var btn = document.getElementById("zoom-in");
-        btn.onclick = function() {
+        zoomIn.onclick = function () {
             zoom *= 1.2;
-            scale(canvas);
+            scale();
         };
-        zoomIn = btn;
-        btn = document.getElementById("zoom-out");
-        btn.onclick = function() {
+        zoomOut.onclick = function () {
             zoom /= 1.2;
-            scale(canvas);
+            scale();
         };
-        zoomOut = btn;
-
-        // Create error displayer
-        err = document.getElementById("err");
 
         // Create sheet object and canvas
-        sheet = new window.osmd.MusicSheet();
-        canvas = document.createElement("canvas");
-        canvas.width = canvas.height = 0;
+        sheet = new window.osmd.MusicSheet(canvas);
         document.body.appendChild(canvas);
-        sheet.setCanvas(canvas);
 
-        // Set resize
+        // Set resize event handler
         new window.Resize(
             function(){
                 disable();
             },
             function() {
                 var width = document.body.clientWidth;
-                sheet.setWidth(width);
+                canvas.width = width;
+                try {
+                sheet.render();
+                } catch (e) {};
                 enable();
+            }
+        );
+
+        window.addEventListener("keydown", function(e) {
+            var event = window.event ? window.event : e;
+            if (event.keyCode === 39) {
+                sheet.cursor.next();
+            }
+        });
+        nextCursorBtn.addEventListener("click", function() {
+            sheet.cursor.next();
+        });
+        hideCursorBtn.addEventListener("click", function() {
+            sheet.cursor.hide();
+        });
+        showCursorBtn.addEventListener("click", function() {
+            sheet.cursor.show();
+        });
+    }
+
+    function selectOnChange(str) {
+        error();
+        disable();
+        var isCustom = typeof str === "string";
+        if (!isCustom) {
+            str = folder + select.value + ".xml";
+        }
+        sheet.load(str).then(
+            function() {
+                return sheet.render();
+            },
+            function(e) {
+                error("Error reading sheet: " + e);
+            }
+        ).then(
+            function() {
+                return onLoadingEnd(isCustom);
+            }, function(e) {
+                error("Error rendering sheet: " + e);
+                onLoadingEnd(isCustom);
             }
         );
     }
 
-    function selectOnChange() {
-        loadMusicXML(folder + select.value + ".xml");
+    function onLoadingEnd(isCustom) {
+        // Remove option from select
+        if (!isCustom && custom.parentElement === select) {
+            select.removeChild(custom);
+        }
+        // Enable controls again
+        enable();
     }
 
     function logCanvasSize() {
-        size.innerHTML = canvas.width + "&times;" + canvas.height;
+        size.innerHTML = canvas.offsetWidth;
+        zoomDiv.innerHTML = Math.floor(zoom * 100.0);
     }
 
     function scale() {
         disable();
         window.setTimeout(function(){
-            sheet.scale(zoom);
+            sheet.zoom = zoom;
+            sheet.render();
             enable();
         }, 0);
-    }
-
-    function loadMusicXML(url) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (xhttp.readyState == 4 && xhttp.status == 0) {
-                xml(xhttp.responseXML);
-            }
-        };
-        xhttp.open("GET", url, true);
-        xhttp.send();
-    }
-
-    function xml(data) {
-        if (!data) {
-            return error("Error parsing the XML document");
-        }
-        error();
-        try {
-            sheet.load(data);
-        } catch (e) {
-            error("Error loading sheet: " + e);
-            canvas.width = canvas.height = 0;
-            enable();
-            throw e;
-        }
-        // Remove option from select
-        if (custom.parentElement === select) {
-            select.removeChild(custom);
-        }
-        // Enable controls again
-        enable();
     }
 
     function error(errString) {
@@ -140,6 +164,8 @@ new (function () {
         } else {
             err.textContent = errString;
             tr.style.display = "";
+            canvas.width = canvas.height = 0;
+            enable();
         }
     }
 
@@ -180,9 +206,8 @@ new (function () {
         // Read dragged file
         var reader = new FileReader();
         reader.onload = function (res) {
-            var content = res.target.result;
-            xml((new DOMParser()).parseFromString(content, "text/xml"));
+            selectOnChange(res.target.result);
         };
-        reader.readAsText(event.dataTransfer.files[0]);
+        reader.readAsBinaryString(event.dataTransfer.files[0]);
     });
-})();
+}());

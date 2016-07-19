@@ -1,26 +1,32 @@
 {
-  "name": "OSMDDemo",
-  "description": "A basic demo for Open Sheet Music Display",
-  "author": "PhonicScore GmbH",
-  "version": "0.0.1",
-  "main": "",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/opensheetmusicdisplay/demo.git"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "browserify": "",
-    "grunt": "",
-    "grunt-browserify": "",
-    "grunt-contrib-clean": "",
-    "grunt-contrib-jshint": "",
-    "grunt-tslint": "",
-    "grunt-typings": "",
-    "jszip": "",
-    "tsify": "",
-    "tslint": "3.8.0",
-    "typescript": "",
-    "opensheetmusicdisplay": "file:../opensheetmusicdisplay"
-  }
+    "name": "OSMDDemo",
+    "description": "A basic demo for Open Sheet Music Display",
+    "author": "PhonicScore GmbH",
+    "version": "0.0.1",
+    "main": "",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "$(npm bin)/http-server ./src/demo.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/opensheetmusicdisplay/demo.git"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "opensheetmusicdisplay": "file:../opensheetmusicdisplay"
+    },
+    "devDependencies": {
+        "browserify": "",
+        "grunt": "",
+        "grunt-browserify": "",
+        "grunt-contrib-clean": "",
+        "grunt-contrib-jshint": "",
+        "grunt-tslint": "",
+        "grunt-typings": "",
+        "tsify": "",
+        "tslint": "3.8.0",
+        "typescript": "",
+        "http-server": ""
+    }
 }

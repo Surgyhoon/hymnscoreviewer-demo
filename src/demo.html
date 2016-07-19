@@ -2,6 +2,24 @@
 <html>
     <head>
         <title>OSMD Demo</title>
+        <script>
+            var container;
+            var sheet;
+            function onLoad() {
+                container = document.createElement("div");
+                sheet = new osmd.OpenSheetMusicDisplay(container);
+                document.body.appendChild(container);
+                return sheet;
+            }
+            function chooseSheet(xml) {
+                sheet.load(xml);
+            }
+            function onResize() {
+                var width = document.body.clientWidth;
+                container.width = width;
+                sheet.render();
+            }
+        </script>
         <script src="../../opensheetmusicdisplay/build/osmd-demo.js"></script>
         <script src="resize.js"></script>
         <script src="demo.js"></script>
@@ -31,17 +49,17 @@
         <tr><td class="bignum">1</td><td><p>
           Select a sample from the list below...</p>
           <select id="select"></select>
-          <p>... or just drag'n'drop your MusicXML file on this page.
-        </p>
+          <p>... or just drag'n'drop your MusicXML file on this page.</p>
         </td></tr>
-        <tr><td class="bignum">2</td><td><p>
-          Zoom controls:
-          <input type="button" value="Zoom In" id="zoom-in"/>
-          <input type="button" value="Zoom Out" id="zoom-out"/>
-        </p>
+        <tr><td class="bignum">2</td><td>
+        <p>Current width: <span id="size">???</span>px</p>
+        <p>Zoom factor: <span id="zoom">???</span>%</p>
         <p>
-          Current size: <span id="size">???</span>px.
+          Zoom controls:
+          <input type="button" value="zoom in" id="zoom-in"/>
+          <input type="button" value="zoom out" id="zoom-out"/>
         </p>
+        <p>Cursor controls: <input type="button" value="show" id="showCursorBtn"/> <input type="button" value="hide" id="hideCursorBtn"/> <input type="button" value="next" id="nextCursorBtn"/></p>
       </td></tr>
       <tr id="error-tr" style="display: none;"><td></td><td id="err"></td></tr>
       </table>
