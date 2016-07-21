@@ -24,6 +24,7 @@
         zoom = 1.0,
     // HTML Elements in the page
         err,
+        error_tr,
         canvas,
         select,
         zoomIn,
@@ -39,17 +40,21 @@
     function init() {
         var name, option;
 
-        err = document.getElementById("err");
-        size = document.getElementById("size");
-        zoomDiv = document.getElementById("zoom");
+        err = document.getElementById("error-td");
+        error_tr = document.getElementById("error-tr");
+        size = document.getElementById("size-str");
+        zoomDiv = document.getElementById("zoom-str");
         custom = document.createElement("option");
         select = document.getElementById("select");
-        zoomIn = document.getElementById("zoom-in");
-        zoomOut = document.getElementById("zoom-out");
+        zoomIn = document.getElementById("zoom-in-btn");
+        zoomOut = document.getElementById("zoom-out-btn");
         canvas = document.createElement("div");
-        nextCursorBtn = document.getElementById("nextCursorBtn");
-        showCursorBtn = document.getElementById("showCursorBtn");
-        hideCursorBtn = document.getElementById("hideCursorBtn");
+        nextCursorBtn = document.getElementById("next-cursor-btn");
+        showCursorBtn = document.getElementById("show-cursor-btn");
+        hideCursorBtn = document.getElementById("hide-cursor-btn");
+
+        // Hide error
+        error();
 
         // Create select
         for (name in demos) {
@@ -79,7 +84,7 @@
         document.body.appendChild(canvas);
 
         // Set resize event handler
-        new window.Resize(
+        new Resize(
             function(){
                 disable();
             },
@@ -110,6 +115,35 @@
         });
     }
 
+    function Resize(startCallback, endCallback) {
+      "use strict";
+
+      var rtime;
+      var timeout = false;
+      var delta = 200;
+
+      function resizeEnd() {
+        timeout = window.clearTimeout(timeout);
+        if (new Date() - rtime < delta) {
+          timeout = setTimeout(resizeEnd, delta);
+        } else {
+          endCallback();
+        }
+      }
+
+      window.addEventListener("resize", function () {
+        rtime = new Date();
+        if (!timeout) {
+          startCallback();
+          rtime = new Date();
+          timeout = window.setTimeout(resizeEnd, delta);
+        }
+      });
+
+      window.setTimeout(startCallback, 0);
+      window.setTimeout(endCallback, 1);
+    }
+
     function selectOnChange(str) {
         error();
         disable();
@@ -117,6 +151,7 @@
         if (!isCustom) {
             str = folder + select.value + ".xml";
         }
+        zoom = 1.0;
         sheet.load(str).then(
             function() {
                 return sheet.render();
@@ -158,12 +193,11 @@
     }
 
     function error(errString) {
-        var tr = document.getElementById("error-tr");
         if (!errString) {
-            tr.style.display = "none";
+            error_tr.style.display = "none";
         } else {
             err.textContent = errString;
-            tr.style.display = "";
+            error_tr.style.display = "";
             canvas.width = canvas.height = 0;
             enable();
         }

@@ -1,67 +1,45 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>OSMD Demo</title>
-        <script>
-            var container;
-            var sheet;
-            function onLoad() {
-                container = document.createElement("div");
-                sheet = new osmd.OpenSheetMusicDisplay(container);
-                document.body.appendChild(container);
-                return sheet;
-            }
-            function chooseSheet(xml) {
-                sheet.load(xml);
-            }
-            function onResize() {
-                var width = document.body.clientWidth;
-                container.width = width;
-                sheet.render();
-            }
-        </script>
-        <script src="../../opensheetmusicdisplay/build/osmd-demo.js"></script>
-        <script src="resize.js"></script>
-        <script src="demo.js"></script>
-    </head>
-    <style>
-    .bignum {
-      width: 1em;
-      text-align: center;
-      font-size: 4em;
-      color: white;
-      background-color: black;
-      padding: 0.3em;
-      border-right: 0.3em solid white;
-    }
-    #error-tr {
-      background-color: red;
-      text-align: center;
-    }
-    #err {
-      padding: 1em;
-      color: white;
-    }
-    </style>
-    <body>
-      <h1>Open Sheet Music Display Demo</h1>
-      <table cellspacing="0" style="width: 100%;">
-        <tr><td class="bignum">1</td><td><p>
-          Select a sample from the list below...</p>
+  <head>
+    <title>OSMD Demo</title>
+    <script src="osmd-demo.js"></script>
+    <script src="demo.js"></script>
+    <link href="demo.css" media="all" rel="stylesheet" />
+  </head>
+  <body>
+    <h1>Open Sheet Music Display Demo</h1>
+    <table cellspacing="0">
+      <tr>
+        <td class="bignum">1</td>
+        <td>
+          <p>
+            Select a sample from the list below...
+          </p>
           <select id="select"></select>
           <p>... or just drag'n'drop your MusicXML file on this page.</p>
-        </td></tr>
-        <tr><td class="bignum">2</td><td>
-        <p>Current width: <span id="size">???</span>px</p>
-        <p>Zoom factor: <span id="zoom">???</span>%</p>
-        <p>
-          Zoom controls:
-          <input type="button" value="zoom in" id="zoom-in"/>
-          <input type="button" value="zoom out" id="zoom-out"/>
-        </p>
-        <p>Cursor controls: <input type="button" value="show" id="showCursorBtn"/> <input type="button" value="hide" id="hideCursorBtn"/> <input type="button" value="next" id="nextCursorBtn"/></p>
-      </td></tr>
-      <tr id="error-tr" style="display: none;"><td></td><td id="err"></td></tr>
-      </table>
-    </body>
+        </td>
+      </tr>
+      <tr>
+        <td class="bignum">2</td>
+        <td>
+          <p>Current width: <span id="size-str">???</span>px</p>
+          <p>Zoom factor: <span id="zoom-str">???</span>%</p>
+          <p>
+            Zoom controls:
+            <input type="button" value="zoom in" id="zoom-in-btn"/>
+            <input type="button" value="zoom out" id="zoom-out-btn"/>
+          </p>
+          <p>Cursor controls:
+            <input type="button" value="show" id="show-cursor-btn"/>
+            <input type="button" value="hide" id="hide-cursor-btn"/>
+            <input type="button" value="next" id="next-cursor-btn"/>
+          </p>
+        </td>
+      </tr>
+      <tr id="error-tr">
+        <td></td>
+        <td id="error-td"></td>
+      </tr>
+    </table>
+  </body>
 </html>
