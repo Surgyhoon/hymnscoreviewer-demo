@@ -25,7 +25,7 @@
         "grunt-tslint": "",
         "grunt-typings": "",
         "tsify": "",
-        "tslint": "3.8.0",
+        "tslint": "4.4.2",
         "typescript": "",
         "http-server": ""
     }
